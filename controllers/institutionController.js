@@ -1,6 +1,7 @@
 const Institution = require("../models/institutionModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
+const { filterObj, excludeObj } = require("../utils/objectUtils");
 
 exports.createInstitution = catchAsync(async (req, res, next) => {
   const newInstitution = await Institution.create(req.body);
@@ -32,6 +33,32 @@ exports.getInstitution = catchAsync(async (req, res, next) => {
   if (!institution) {
     return next(new AppError(404, "Institution not found"));
   }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      institution,
+    },
+  });
+});
+
+exports.updateInstitution = catchAsync(async (req, res, next) => {
+  const institution = await Institution.findById(req.params.id);
+
+  if (!institution) {
+    return next(new AppError(404, "Institution not found"));
+  }
+
+  const filteredBody = excludeObj(
+    req.body,
+    "institutionType",
+    "country",
+    "isActive",
+  );
+
+  Object.assign(institution, filteredBody);
+
+  await institution.save();
 
   res.status(200).json({
     status: "success",
