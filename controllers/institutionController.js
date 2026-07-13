@@ -11,3 +11,16 @@ exports.createInstitution = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getInstitutions = catchAsync(async (req, res, next) => {
+  const institutions = await Institution.find({
+    isActive: true,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      institutions,
+    },
+  });
+});
