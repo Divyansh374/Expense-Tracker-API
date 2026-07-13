@@ -1,0 +1,42 @@
+const mongoose = require("mongoose");
+
+const transactionSchema = new mongoose.Schema(
+  {
+    title: String,
+    description: String,
+    amount: {
+      type: Number,
+      required: [true, "Please specify an amount"],
+    },
+    transactionType: {
+      type: String,
+      enum: ["expense", "income", "transfer"],
+      required: [true, "Please provide a transaction type"],
+    },
+    linkedTransaction: mongoose.Types.ObjectId,
+    isRecurring: Boolean,
+    recurringTransaction: mongoose.Types.ObjectId,
+    receipt: String,
+    paymentMode: {
+      type: String,
+      enum: ["UPI", "Credit Card", "Debit Card", "Net Banking", "Cash"],
+      default: "Net Banking",
+    },
+    sourceAccount: mongoose.Types.ObjectId,
+    destinationAccount: mongoose.Types.ObjectId,
+    category: mongoose.Types.ObjectId,
+    owner: mongoose.Types.ObjectId,
+    transactionDate: Date,
+    status: {
+      type: String,
+      enum: ["pending", "completed", "failed", "cancelled"],
+    },
+    notes: String,
+    attachments: Array,
+  },
+  { timestamps: true },
+);
+
+const Transaction = mongoose.model("Transaction", transactionSchema);
+
+module.exports = Transaction;
