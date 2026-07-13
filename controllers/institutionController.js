@@ -67,3 +67,16 @@ exports.updateInstitution = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.deleteInstitution = catchAsync(async (req, res, next) => {
+  const institution = await Institution.findByIdAndDelete(req.params.id);
+
+  if (!institution) {
+    return next(new AppError(404, "Institution not found"));
+  }
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});

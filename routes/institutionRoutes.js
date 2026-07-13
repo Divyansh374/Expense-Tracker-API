@@ -5,6 +5,7 @@ const {
   getInstitutions,
   getInstitution,
   updateInstitution,
+  deleteInstitution,
 } = require("../controllers/institutionController");
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router
 router
   .route("/:id")
   .get(getInstitution)
-  .patch(protect, restrictTo("admin", "manager"), updateInstitution);
+  .patch(protect, restrictTo("admin", "manager"), updateInstitution)
+  .delete(protect, restrictTo("admin"), deleteInstitution);
 
 module.exports = router;
