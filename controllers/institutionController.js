@@ -83,3 +83,23 @@ exports.deleteInstitution = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.restoreInstitution = catchAsync(async (req, res, next) => {
+  const institution = await Institution.findById(
+    req.params.id,
+  ).includeInactive();
+
+  if (!institution) {
+    return next(new AppError(404, "Institution not found"));
+  }
+
+  institution.isActive = true;
+  await institution.save();
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      institution,
+    },
+  });
+});

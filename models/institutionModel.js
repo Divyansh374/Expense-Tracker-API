@@ -60,8 +60,14 @@ const institutionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+institutionSchema.query.includeInactive = function () {
+  return this.setOptions({ includeInactive: true });
+};
+
 institutionSchema.pre(/^find/, function () {
-  this.find({ isActive: true });
+  if (!this.getOptions().includeInactive) {
+    this.find({ isActive: true });
+  }
 });
 
 const Institution = mongoose.model("Institution", institutionSchema);
