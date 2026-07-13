@@ -60,6 +60,10 @@ const institutionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+institutionSchema.pre(/^find/, function () {
+  this.find({ isActive: true });
+});
+
 const Institution = mongoose.model("Institution", institutionSchema);
 
 module.exports = Institution;
