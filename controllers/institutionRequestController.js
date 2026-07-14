@@ -163,3 +163,34 @@ exports.approveRequest = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.rejectRequest = catchAsync(async (req, res, next) => {
+  const request = await Request.findById(req.params.id);
+
+  if (!request) {
+    return next(new AppError(404, "Request not found"));
+  }
+
+  if (request.status === "rejected" || request.status === "approved") {
+    return next(
+      new AppError(400, `This request has already been ${request.status}`),
+    );
+  }
+
+  if (request.status === "cancelled") {
+    return next(new AppError(400, "This request has been cancelled"));
+  }
+
+  request.status = "rejected";
+  request.reviewedBy = req.user._id;
+  request.reviewedAt = Date.now();
+  request.adminRemarks = req.body.adminRemarks;
+  await request.save();
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      request,
+    },
+  });
+});

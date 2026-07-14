@@ -5,6 +5,7 @@ const {
   getRequests,
   getRequest,
   approveRequest,
+  rejectRequest,
 } = require("../controllers/institutionRequestController");
 
 const router = express.Router();
@@ -12,5 +13,6 @@ const router = express.Router();
 router.route("/").post(protect, postRequest).get(protect, getRequests);
 router.get("/:id", protect, getRequest);
 router.patch("/:id/approve", protect, restrictTo("admin"), approveRequest);
+router.patch("/:id/reject", protect, restrictTo("admin"), rejectRequest);
 
 module.exports = router;
