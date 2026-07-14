@@ -73,3 +73,14 @@ exports.postRequest = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getPendingRequests = catchAsync(async (req, res, next) => {
+  const pendingRequests = await Request.find({ status: "pending" });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      requests: pendingRequests,
+    },
+  });
+});
