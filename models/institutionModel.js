@@ -12,6 +12,11 @@ const institutionSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 100,
     },
+    normalizedName: {
+      type: String,
+      unique: true,
+      select: false,
+    },
     shortName: String,
     description: String,
     institutionType: {
@@ -59,6 +64,10 @@ const institutionSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+institutionSchema.pre("save", function () {
+  this.normalizedName = this.name.trim().toLowerCase();
+});
 
 institutionSchema.query.includeInactive = function () {
   return this.setOptions({ includeInactive: true });

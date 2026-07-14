@@ -1,7 +1,7 @@
 const Institution = require("../models/institutionModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
-const { filterObj, excludeObj } = require("../utils/objectUtils");
+const { excludeObj } = require("../utils/objectUtils");
 
 exports.createInstitution = catchAsync(async (req, res, next) => {
   const newInstitution = await Institution.create(req.body);

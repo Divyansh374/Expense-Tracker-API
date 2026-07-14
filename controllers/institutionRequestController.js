@@ -1,0 +1,65 @@
+const Request = require("../models/institutionRequestModel");
+const Institution = require("../models/institutionModel");
+const AppError = require("../utils/appError");
+const catchAsync = require("../utils/catchAsync");
+const { excludeObj } = require("../utils/objectUtils");
+const normalizeName = require("../utils/normalizeName");
+
+exports.postRequest = catchAsync(async (req, res, next) => {
+  // Filter the body
+  const filteredObj = excludeObj(
+    req.body,
+    "status",
+    "reviewedBy",
+    "reviewedAt",
+    "adminRemarks",
+  );
+
+  filteredObj.requestedBy = [req.user._id];
+
+  // Check if a request or institution already exists
+  const normalizedName = normalizeName(req.body.name);
+
+  const [existingRequest, existingInstitution] = await Promise.all([
+    Request.findOne({ normalizedName }),
+    Institution.findOne({ normalizedName }),
+  ]);
+
+  if (existingInstitution) {
+    return next(new AppError(400, "This institution already exists"));
+  }
+
+  if (existingRequest) {
+    // Check if user has once already requested for the same institution
+    const alreadyRequested = existingRequest.requestedBy.some((id) =>
+      id.equals(req.user._id),
+    );
+
+    if (alreadyRequested) {
+      return next(
+        new AppError(400, "You have already requested this institution once"),
+      );
+    }
+
+    // Push the user id in the existing request
+    existingRequest.requestedBy.push(req.user._id);
+    await existingRequest.save();
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        request: existingRequest,
+      },
+    });
+  }
+
+  // If all ok, create new request
+  const request = await Request.create(filteredObj);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      request,
+    },
+  });
+});

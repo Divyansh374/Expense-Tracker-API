@@ -3,6 +3,7 @@ const morgan = require("morgan");
 
 const authRouter = require("./routes/authRoutes");
 const institutionRouter = require("./routes/institutionRoutes");
+const institutionRequestRouter = require("./routes/institutionRequestRoutes");
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use((req, res, next) => {
 
 app.use("/expense-tracker/v1/users", authRouter);
 app.use("/expense-tracker/v1/institutions", institutionRouter);
+app.use("/expense-tracker/v1/institution-requests", institutionRequestRouter);
 
 module.exports = app;
