@@ -30,6 +30,16 @@ exports.postRequest = catchAsync(async (req, res, next) => {
   }
 
   if (existingRequest) {
+    // Check if the request has been rejected by the admin
+    if (existingRequest.status === "rejected") {
+      existingRequest.status = "pending";
+      existingRequest.requestedBy = [];
+
+      existingRequest.reviewedBy = undefined;
+      existingRequest.reviewedAt = undefined;
+      existingRequest.adminRemarks = undefined;
+    }
+
     // Check if user has once already requested for the same institution
     const alreadyRequested = existingRequest.requestedBy.some((id) =>
       id.equals(req.user._id),
