@@ -74,8 +74,19 @@ exports.postRequest = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getPendingRequests = catchAsync(async (req, res, next) => {
-  const pendingRequests = await Request.find({ status: "pending" });
+exports.getRequests = catchAsync(async (req, res, next) => {
+  let pendingRequests;
+
+  if (req.user.role === "admin") {
+    pendingRequests = await Request.find({ status: "pending" });
+  }
+
+  if (req.user.role === "user") {
+    pendingRequests = await Request.find({
+      requestedBy: req.user._id,
+      status: { $ne: "cancelled" },
+    });
+  }
 
   res.status(200).json({
     status: "success",
