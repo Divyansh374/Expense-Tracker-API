@@ -194,3 +194,49 @@ exports.rejectRequest = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.cancelRequest = catchAsync(async (req, res, next) => {
+  const request = await Request.findById(req.params.id);
+
+  if (!request) {
+    return next(new AppError(404, "Request not found"));
+  }
+
+  const requestedByUser = request.requestedBy.some((id) =>
+    id.equals(req.user._id),
+  );
+
+  if (!requestedByUser) {
+    return next(
+      new AppError(401, "You do not have permission to cancel this request"),
+    );
+  }
+
+  if (request.status === "rejected" || request.status === "approved") {
+    return next(
+      new AppError(400, `This request has already been ${request.status}`),
+    );
+  }
+
+  if (request.status === "cancelled") {
+    return next(new AppError(400, "This request has already been cancelled"));
+  }
+
+  request.requestedBy.pull(req.user._id);
+
+  if (request.requestedBy.length === 0) {
+    request.status = "cancelled";
+    request.reviewedBy = undefined;
+    request.reviewedAt = undefined;
+    request.adminRemarks = undefined;
+  }
+
+  await request.save();
+
+  res.status(204).json({
+    status: "success",
+    data: {
+      request,
+    },
+  });
+});
