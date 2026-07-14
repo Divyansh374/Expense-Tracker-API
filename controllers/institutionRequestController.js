@@ -84,3 +84,28 @@ exports.getPendingRequests = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getRequest = catchAsync(async (req, res, next) => {
+  const request = await Request.findById(req.params.id);
+
+  if (!request) {
+    return next(new AppError(404, "Request not found"));
+  }
+
+  const requestedByUser = request.requestedBy.some((id) =>
+    id.equals(req.user._id),
+  );
+
+  if (req.user.role === "user" && !requestedByUser) {
+    return next(
+      new AppError(401, "You do not have permission to access this request"),
+    );
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      request,
+    },
+  });
+});
