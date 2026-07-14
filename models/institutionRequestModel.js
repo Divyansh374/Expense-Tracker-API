@@ -5,8 +5,11 @@ const institutionRequestSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      trim: true,
       required: [true, "Please provide the name of the institution"],
+      trim: true,
+      unique: true,
+      minlength: 2,
+      maxlength: 100,
     },
     normalizedName: {
       type: String,

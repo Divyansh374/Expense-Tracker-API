@@ -6,7 +6,7 @@ const institutionSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Please provide the name of the Institution"],
       unique: true,
       trim: true,
       minlength: 2,

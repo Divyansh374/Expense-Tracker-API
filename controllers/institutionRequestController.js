@@ -120,3 +120,46 @@ exports.getRequest = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.approveRequest = catchAsync(async (req, res, next) => {
+  const request = await Request.findById(req.params.id);
+
+  if (!request) {
+    return next(new AppError(404, "Request not found"));
+  }
+
+  if (request.status === "approved") {
+    return next(
+      new AppError(400, "This request has already been approved before"),
+    );
+  }
+
+  if (request.status === "cancelled" || request.status === "rejected") {
+    return next(new AppError(400, `This request has been ${request.status}`));
+  }
+
+  const institution = await Institution.create({
+    name: request.name,
+    shortName: req.body.shortName || request.shortName,
+    description: req.body.description,
+    institutionType: req.body.institutionType,
+    supportedCurrencies: req.body.supportedCurrencies,
+    country: req.body.country,
+    website: req.body.website || request.website,
+    logo: req.body.logo,
+  });
+
+  request.status = "approved";
+  request.reviewedBy = req.user._id;
+  request.reviewedAt = Date.now();
+  request.adminRemarks = req.body.adminRemarks;
+  await request.save();
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      institution,
+      request,
+    },
+  });
+});
