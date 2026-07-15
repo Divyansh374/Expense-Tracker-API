@@ -110,3 +110,24 @@ exports.getAccounts = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getAccount = catchAsync(async (req, res, next) => {
+  const account = await Account.findById(req.params.id);
+
+  if (!account) {
+    return next(new AppError(404, "Account not found"));
+  }
+
+  if (!req.user._id.equals(account.owner)) {
+    return next(
+      new AppError(401, "You do not have permission to access this account"),
+    );
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      account,
+    },
+  });
+});

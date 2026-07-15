@@ -6,6 +6,7 @@ const {
   generateAccountName,
   addAccount,
   getAccounts,
+  getAccount,
 } = require("../controllers/accountController");
 
 const router = express.Router();
@@ -21,5 +22,7 @@ router
     addAccount,
   )
   .get(protect, restrictTo("user"), getAccounts);
+
+router.route("/:id").get(protect, restrictTo("user"), getAccount);
 
 module.exports = router;
