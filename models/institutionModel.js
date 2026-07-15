@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const { isValid } = require("i18n-iso-countries");
+const { code } = require("currency-codes");
 
 const institutionSchema = new mongoose.Schema(
   {
@@ -32,7 +33,7 @@ const institutionSchema = new mongoose.Schema(
         type: String,
         uppercase: true,
         validate: {
-          validator: validator.isCurrency,
+          validator: (val) => code(val),
           message: (props) => `${props.value} is not a valid country code`,
         },
       },
@@ -43,7 +44,7 @@ const institutionSchema = new mongoose.Schema(
       uppercase: true,
       trim: true,
       validate: {
-        validator: isValid,
+        validator: (val) => isValid(val),
         message: (props) =>
           `${props.value} is not a valid ISO 3166-1 alpha-2 country code`,
       },

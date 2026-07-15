@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const cc = require("currency-codes");
+const AppError = require("../utils/appError");
 
 const accountSchema = new mongoose.Schema(
   {
@@ -8,23 +9,20 @@ const accountSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: ["cash", "bank", "wallet"],
-      default: "bank",
+      required: [true, "Please provide the type of your account"],
     },
     institution: {
-      type: mongoose.Types.ObjectId,
-      ref: "Institution",
+      name: String,
+      id: { type: mongoose.Types.ObjectId, ref: "Institution" },
     },
-    currentBalance: {
+    balance: {
       type: Number,
-      required: [true, "Please provide the current balance of the account"],
+      default: 0,
     },
-    openingBalance: Number,
     currency: {
       type: String,
       validate: {
-        validator: function (val) {
-          return cc.code(val);
-        },
+        validator: (val) => cc.code(val),
         message: (props) =>
           `${props.value} is not a valid ISO 4217 currency code`,
       },
@@ -37,6 +35,28 @@ const accountSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+accountSchema.pre("validate", function () {
+  if (this.type === "cash" && this.institution?.id) {
+    throw new AppError(
+      400,
+      "Cash account cannot be associated with an institution",
+    );
+  }
+
+  if (this.type === "cash" && !this.currency) {
+    throw new AppError(400, "Please provide a currency for your cash account");
+  }
+});
+
+accountSchema.pre("validate", function () {
+  if (this.type !== "cash" && !this.institution?.id) {
+    throw new AppError(
+      400,
+      "Please provide an institution for your digital account",
+    );
+  }
+});
 
 const Account = mongoose.model("Account", accountSchema);
 

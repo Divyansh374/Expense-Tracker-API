@@ -123,3 +123,28 @@ exports.restoreInstitution = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.validateInstitution = catchAsync(async (req, res, next) => {
+  if (!req.body.type) {
+    return next(new AppError(400, "Please enter the type of your account"));
+  }
+
+  if (req.body.institution) {
+    const normalizedName = req.body.institution
+      .trim()
+      .replace(/\s+/g, " ")
+      .toLowerCase();
+
+    const institution = await Institution.findOne({
+      normalizedName,
+      isActive: true,
+    });
+
+    if (!institution) {
+      return next(new AppError(404, "Institution not found"));
+    }
+
+    req.institution = institution;
+  }
+  next();
+});

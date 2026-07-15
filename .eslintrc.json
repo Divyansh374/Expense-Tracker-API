@@ -1,4 +1,11 @@
 {
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
   "extends": ["airbnb", "plugin:node/recommended", "prettier"],
   "plugins": [],
   "rules": {
