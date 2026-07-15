@@ -185,3 +185,29 @@ exports.deleteAccount = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.restoreAccount = catchAsync(async (req, res, next) => {
+  const account = await Account.findById(req.params.id).setOptions({
+    skipMiddleware: true,
+  });
+
+  if (!account) {
+    return next(new AppError(404, "Institution not found"));
+  }
+
+  if (!req.user._id.equals(account.owner)) {
+    return next(
+      new AppError(401, "You do not have permission to access this account"),
+    );
+  }
+
+  account.isActive = true;
+  await account.save();
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      account,
+    },
+  });
+});

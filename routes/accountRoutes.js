@@ -9,9 +9,12 @@ const {
   getAccount,
   updateAccount,
   deleteAccount,
+  restoreAccount,
 } = require("../controllers/accountController");
 
 const router = express.Router();
+
+router.patch("/:id/restore", protect, restrictTo("user"), restoreAccount);
 
 router
   .route("/")
