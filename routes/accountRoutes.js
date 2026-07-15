@@ -8,6 +8,7 @@ const {
   getAccounts,
   getAccount,
   updateAccount,
+  deleteAccount,
 } = require("../controllers/accountController");
 
 const router = express.Router();
@@ -27,6 +28,7 @@ router
 router
   .route("/:id")
   .get(protect, restrictTo("user"), getAccount)
-  .patch(protect, restrictTo("user"), updateAccount);
+  .patch(protect, restrictTo("user"), updateAccount)
+  .delete(protect, restrictTo("user"), deleteAccount);
 
 module.exports = router;

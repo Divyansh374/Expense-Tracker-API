@@ -58,6 +58,16 @@ accountSchema.pre("validate", function () {
   }
 });
 
+accountSchema.pre(/^find/, function () {
+  const options = this.getOptions();
+
+  if (options.skipMiddleware === true) return;
+
+  if (this.isActive === false) {
+    throw new AppError(400, "This account is inactive");
+  }
+});
+
 const Account = mongoose.model("Account", accountSchema);
 
 module.exports = Account;
