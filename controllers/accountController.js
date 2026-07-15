@@ -131,3 +131,27 @@ exports.getAccount = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.updateAccount = catchAsync(async (req, res, next) => {
+  const account = await Account.findById(req.params.id);
+
+  if (!account) {
+    return next(new AppError(404, "Account not found"));
+  }
+
+  if (!account.name.startsWith(`${account.institution.name} - Account`)) {
+    return next(
+      new AppError(400, "Custom names set by the user cannot be updated"),
+    );
+  }
+
+  account.name = req.body.name;
+  await account.save();
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      account,
+    },
+  });
+});
