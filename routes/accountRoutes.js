@@ -5,6 +5,7 @@ const {
   validateCurrency,
   generateAccountName,
   addAccount,
+  getAccounts,
 } = require("../controllers/accountController");
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router
     validateCurrency,
     generateAccountName,
     addAccount,
-  );
+  )
+  .get(protect, restrictTo("user"), getAccounts);
 
 module.exports = router;
