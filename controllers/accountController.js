@@ -211,3 +211,89 @@ exports.restoreAccount = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getAccountStats = catchAsync(async (req, res, next) => {
+  const stats = await Account.aggregate([
+    {
+      $match: { owner: req.user._id },
+    },
+    {
+      $facet: {
+        accountTotals: [
+          {
+            $group: {
+              _id: null,
+              totalAccounts: {
+                $sum: 1,
+              },
+              cashAccounts: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ["$type", "cash"],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+              bankAccounts: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ["$type", "bank"],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+              wallets: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ["$type", "wallet"],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              totalAccounts: "$totalAccounts",
+              cashAccounts: "$cashAccounts",
+              bankAccounts: "$bankAccounts",
+              wallets: "$wallets",
+            },
+          },
+        ],
+        currencyTotals: [
+          {
+            $group: {
+              _id: "$currency",
+              accounts: { $sum: 1 },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              currency: "$_id",
+              accounts: "$accounts",
+            },
+          },
+        ],
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      stats,
+    },
+  });
+});

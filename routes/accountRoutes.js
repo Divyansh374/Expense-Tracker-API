@@ -10,10 +10,12 @@ const {
   updateAccount,
   deleteAccount,
   restoreAccount,
+  getAccountStats,
 } = require("../controllers/accountController");
 
 const router = express.Router();
 
+router.get("/stats", protect, restrictTo("user"), getAccountStats);
 router.patch("/:id/restore", protect, restrictTo("user"), restoreAccount);
 
 router
