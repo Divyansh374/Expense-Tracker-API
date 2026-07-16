@@ -6,6 +6,7 @@ const institutionRouter = require("./routes/institutionRoutes");
 const institutionRequestRouter = require("./routes/institutionRequestRoutes");
 const accountRouter = require("./routes/accountRoutes");
 const transactionRouter = require("./routes/transactionRoutes");
+const categoryRouter = require("./routes/categoryRoutes");
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.use("/expense-tracker/v1/institutions", institutionRouter);
 app.use("/expense-tracker/v1/institution-requests", institutionRequestRouter);
 app.use("/expense-tracker/v1/accounts", accountRouter);
 app.use("/expense-tracker/v1/transactions", transactionRouter);
+app.use("/expense-tracker/v1/categories", categoryRouter);
 
 module.exports = app;

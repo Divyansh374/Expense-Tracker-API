@@ -243,21 +243,23 @@ exports.deleteTransaction = catchAsync(async (req, res, next) => {
   session.startTransaction();
 
   try {
-    const transaction = await Transaction.findById(req.params.id);
+    const transaction = await Transaction.findById(req.params.id).session(
+      session,
+    );
 
     if (transaction.transactionType === "transfer") {
       await Promise.all([
         Account.findByIdAndUpdate(
           transaction.sourceAccount.id,
           {
-            $inc: { balance: req.body.amount },
+            $inc: { balance: transaction.amount },
           },
           { session },
         ),
         Account.findByIdAndUpdate(
           transaction.destinationAccount.id,
           {
-            $inc: { balance: -req.body.amount },
+            $inc: { balance: -transaction.amount },
           },
           { session },
         ),
@@ -266,7 +268,7 @@ exports.deleteTransaction = catchAsync(async (req, res, next) => {
       await Account.findByIdAndUpdate(
         transaction.sourceAccount.id,
         {
-          $inc: { balance: req.body.amount },
+          $inc: { balance: transaction.amount },
         },
         { session },
       );
@@ -274,14 +276,14 @@ exports.deleteTransaction = catchAsync(async (req, res, next) => {
       await Account.findByIdAndUpdate(
         transaction.destinationAccount.id,
         {
-          $inc: { balance: -req.body.amount },
+          $inc: { balance: -transaction.amount },
         },
         { session },
       );
     }
 
     transaction.isDeleted = true;
-    transaction.save();
+    await transaction.save({ session });
 
     await session.commitTransaction();
 
