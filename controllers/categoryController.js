@@ -18,3 +18,16 @@ exports.createCategory = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getCategories = catchAsync(async (req, res, next) => {
+  const categories = await Category.find({
+    owner: req.user._id,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      categories,
+    },
+  });
+});
