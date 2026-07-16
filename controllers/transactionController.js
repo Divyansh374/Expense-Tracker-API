@@ -395,6 +395,14 @@ exports.getTransactionStats = catchAsync(async (req, res, next) => {
             },
           },
           {
+            $project: {
+              title: 1,
+              amount: 1,
+              transactionDate: 1,
+              paymentMode: 1,
+            },
+          },
+          {
             $sort: {
               amount: -1,
             },
@@ -407,6 +415,15 @@ exports.getTransactionStats = catchAsync(async (req, res, next) => {
           {
             $match: {
               transactionType: "income",
+            },
+          },
+          {
+            $project: {
+              title: 1,
+              amount: 1,
+              category: 1,
+              transactionDate: 1,
+              paymentMode: 1,
             },
           },
           {
@@ -435,8 +452,6 @@ exports.getTransactionStats = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    data: {
-      stats,
-    },
+    data: stats,
   });
 });

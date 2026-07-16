@@ -40,7 +40,7 @@ const transactionSchema = new mongoose.Schema(
     },
     notes: String,
     attachments: Array,
-    isActive: {
+    isDeleted: {
       type: Boolean,
       default: true,
     },
