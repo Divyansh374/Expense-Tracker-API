@@ -21,6 +21,7 @@ router
     validateAmount,
     resolvePaymentMode,
     createTransaction,
-  );
+  )
+  .get(protect, restrictTo("user"), getTransactions);
 
 module.exports = router;

@@ -40,6 +40,10 @@ const transactionSchema = new mongoose.Schema(
     },
     notes: String,
     attachments: Array,
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true },
 );

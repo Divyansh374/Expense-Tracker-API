@@ -18,6 +18,10 @@ const accountSchema = new mongoose.Schema(
     balance: {
       type: Number,
       default: 0,
+      validate: {
+        validator: (val) => val >= 0,
+        message: "An Account cannot have negative balance",
+      },
     },
     currency: {
       type: String,
@@ -28,9 +32,9 @@ const accountSchema = new mongoose.Schema(
       },
     },
     color: String,
-    isActive: {
+    isDeleted: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   { timestamps: true },

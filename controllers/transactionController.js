@@ -203,3 +203,16 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
     session.endSession();
   }
 });
+
+exports.getTransactions = catchAsync(async (req, res, next) => {
+  const transactions = await Transaction.find({
+    owner: req.user._id,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      transactions,
+    },
+  });
+});
