@@ -216,3 +216,23 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getTransaction = catchAsync(async (req, res, next) => {
+  const transaction = await Transaction.findById(req.params.id);
+
+  if (!transaction.owner.equals(req.user._id)) {
+    return next(
+      new AppError(
+        401,
+        "You do not have the permission to access this transaction",
+      ),
+    );
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      transaction,
+    },
+  });
+});

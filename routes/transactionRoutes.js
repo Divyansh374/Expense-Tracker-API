@@ -7,6 +7,7 @@ const {
   resolvePaymentMode,
   createTransaction,
   getTransactions,
+  getTransaction,
 } = require("../controllers/transactionController");
 
 const router = express.Router();
@@ -23,5 +24,7 @@ router
     createTransaction,
   )
   .get(protect, restrictTo("user"), getTransactions);
+
+router.route("/:id").get(protect, restrictTo("user"), getTransaction);
 
 module.exports = router;
