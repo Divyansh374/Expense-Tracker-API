@@ -8,6 +8,7 @@ const {
   createTransaction,
   getTransactions,
   getTransaction,
+  deleteTransaction,
 } = require("../controllers/transactionController");
 
 const router = express.Router();
@@ -25,6 +26,9 @@ router
   )
   .get(protect, restrictTo("user"), getTransactions);
 
-router.route("/:id").get(protect, restrictTo("user"), getTransaction);
+router
+  .route("/:id")
+  .get(protect, restrictTo("user"), getTransaction)
+  .delete(protect, restrictTo("user"), deleteTransaction);
 
 module.exports = router;

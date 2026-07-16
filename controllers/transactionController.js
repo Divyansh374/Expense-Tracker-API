@@ -236,3 +236,65 @@ exports.getTransaction = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.deleteTransaction = catchAsync(async (req, res, next) => {
+  const session = await mongoose.startSession();
+
+  session.startTransaction();
+
+  try {
+    const transaction = await Transaction.findById(req.params.id);
+
+    if (transaction.transactionType === "transfer") {
+      await Promise.all([
+        Account.findByIdAndUpdate(
+          transaction.sourceAccount.id,
+          {
+            $inc: { balance: req.body.amount },
+          },
+          { session },
+        ),
+        Account.findByIdAndUpdate(
+          transaction.destinationAccount.id,
+          {
+            $inc: { balance: -req.body.amount },
+          },
+          { session },
+        ),
+      ]);
+    } else if (transaction.transactionType === "expense") {
+      await Account.findByIdAndUpdate(
+        transaction.sourceAccount.id,
+        {
+          $inc: { balance: req.body.amount },
+        },
+        { session },
+      );
+    } else {
+      await Account.findByIdAndUpdate(
+        transaction.destinationAccount.id,
+        {
+          $inc: { balance: -req.body.amount },
+        },
+        { session },
+      );
+    }
+
+    transaction.isDeleted = true;
+    transaction.save();
+
+    await session.commitTransaction();
+
+    res.status(204).json({
+      status: "success",
+      data: {
+        transaction,
+      },
+    });
+  } catch (err) {
+    await session.abortTransaction();
+    return next(err);
+  } finally {
+    session.endSession();
+  }
+});
