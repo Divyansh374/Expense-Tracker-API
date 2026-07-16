@@ -11,7 +11,6 @@ const transactionSchema = new mongoose.Schema(
     transactionType: {
       type: String,
       enum: ["expense", "income", "transfer"],
-      required: [true, "Please provide a transaction type"],
     },
     linkedTransaction: mongoose.Types.ObjectId,
     isRecurring: Boolean,
@@ -19,23 +18,37 @@ const transactionSchema = new mongoose.Schema(
     receipt: String,
     paymentMode: {
       type: String,
-      enum: ["UPI", "Credit Card", "Debit Card", "Net Banking", "Cash"],
-      default: "Net Banking",
+      enum: ["digital", "cash"],
     },
-    sourceAccount: mongoose.Types.ObjectId,
-    destinationAccount: mongoose.Types.ObjectId,
+    sourceAccount: {
+      name: String,
+      institution: String,
+      id: mongoose.Types.ObjectId,
+    },
+    destinationAccount: {
+      name: String,
+      institution: String,
+      id: mongoose.Types.ObjectId,
+    },
     category: mongoose.Types.ObjectId,
     owner: mongoose.Types.ObjectId,
     transactionDate: Date,
     status: {
       type: String,
       enum: ["pending", "completed", "failed", "cancelled"],
+      default: "completed",
     },
     notes: String,
     attachments: Array,
   },
   { timestamps: true },
 );
+
+transactionSchema.pre("save", function () {
+  if (!this.isNew) return;
+
+  this.transactionDate = Date.now();
+});
 
 const Transaction = mongoose.model("Transaction", transactionSchema);
 

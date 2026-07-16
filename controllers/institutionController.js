@@ -1,4 +1,5 @@
 const Institution = require("../models/institutionModel");
+const Account = require("../models/accountModel");
 const Request = require("../models/institutionRequestModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
@@ -145,6 +146,23 @@ exports.validateInstitution = catchAsync(async (req, res, next) => {
     }
 
     req.institution = institution;
+
+    if (req.body.name) {
+      const account = await Account.findOne({
+        name: req.body.name,
+        "institution.name": institution.name,
+        owner: req.user._id,
+      });
+
+      if (account) {
+        return next(
+          new AppError(
+            400,
+            "There is already an account with the same name and institution.",
+          ),
+        );
+      }
+    }
   }
   next();
 });
