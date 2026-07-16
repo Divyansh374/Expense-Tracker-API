@@ -9,9 +9,12 @@ const {
   getTransactions,
   getTransaction,
   deleteTransaction,
+  getTransactionStats,
 } = require("../controllers/transactionController");
 
 const router = express.Router();
+
+router.get("/stats", protect, getTransactionStats);
 
 router
   .route("/")

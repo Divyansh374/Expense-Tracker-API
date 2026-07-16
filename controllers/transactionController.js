@@ -298,3 +298,145 @@ exports.deleteTransaction = catchAsync(async (req, res, next) => {
     session.endSession();
   }
 });
+
+exports.getTransactionStats = catchAsync(async (req, res, next) => {
+  const stats = await Transaction.aggregate([
+    {
+      $match: {
+        owner: req.user._id,
+      },
+    },
+    {
+      $facet: {
+        totals: [
+          {
+            $group: {
+              _id: "$transactionType",
+              total: {
+                $sum: 1,
+              },
+              totalAmount: {
+                $sum: "$amount",
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              type: "$_id",
+              total: 1,
+              totalAmount: 1,
+            },
+          },
+        ],
+        paymentModes: [
+          {
+            $group: {
+              _id: "$paymentMode",
+              total: {
+                $sum: 1,
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              mode: "$_id",
+              total: "$total",
+            },
+          },
+        ],
+        monthly: [
+          {
+            $group: {
+              _id: {
+                $dateTrunc: { date: "$transactionDate", unit: "month" },
+              },
+              expenseTransactions: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ["transactionType", "expense"],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+              incomeTransactions: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ["transactionType", "income"],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+              transferTransactions: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ["transactionType", "transfer"],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+            },
+          },
+        ],
+        largestExpense: [
+          {
+            $match: {
+              transactionType: "expense",
+            },
+          },
+          {
+            $sort: {
+              amount: -1,
+            },
+          },
+          {
+            $limit: 1,
+          },
+        ],
+        largestIncome: [
+          {
+            $match: {
+              transactionType: "income",
+            },
+          },
+          {
+            $sort: {
+              amount: -1,
+            },
+          },
+          {
+            $limit: 1,
+          },
+        ],
+        recent: [
+          {
+            $sort: {
+              transactionDate: -1,
+              amount: 1,
+            },
+          },
+          {
+            $limit: 3,
+          },
+        ],
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      stats,
+    },
+  });
+});
