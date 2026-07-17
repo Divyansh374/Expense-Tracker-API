@@ -62,7 +62,7 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "Category not found"));
   }
 
-  const filteredObj = excludeObj(req.body, "isActive");
+  const filteredObj = excludeObj(req.body, "isActive", "transactions");
 
   Object.keys(filteredObj).forEach(
     (e) => filteredObj[e] === undefined && delete filteredObj[e],

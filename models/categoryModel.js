@@ -6,13 +6,17 @@ const categorySchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide a name for your category"],
     },
-    type: {
-      type: String,
-      enum: ["expense", "income", "transfer"],
-    },
     icon: String,
     color: String,
     owner: mongoose.Types.ObjectId,
+    transactions: [
+      {
+        sourceAccount: mongoose.Types.ObjectId,
+        destinationAccount: mongoose.Types.ObjectId,
+        type: String,
+        amount: Number,
+      },
+    ],
     isDefault: Boolean,
     isActive: {
       type: Boolean,
