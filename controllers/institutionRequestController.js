@@ -138,6 +138,15 @@ exports.approveRequest = catchAsync(async (req, res, next) => {
     return next(new AppError(400, `This request has been ${request.status}`));
   }
 
+  if (!req.body.supportedCurrencies) {
+    return next(
+      new AppError(
+        400,
+        "Please specify the institution's supported currencies to approve the request",
+      ),
+    );
+  }
+
   const institution = await Institution.create({
     name: request.name,
     shortName: req.body.shortName || request.shortName,

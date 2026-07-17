@@ -32,6 +32,7 @@ const institutionSchema = new mongoose.Schema(
       {
         type: String,
         uppercase: true,
+        required: true,
         validate: {
           validator: (val) => code(val),
           message: (props) => `${props.value} is not a valid country code`,
