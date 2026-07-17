@@ -1,8 +1,10 @@
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
+const randomColor = require("randomcolor");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const Category = require("../models/categoryModel");
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -20,6 +22,26 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm,
   });
 
+  await Promise.all([
+    await Category.create({
+      name: "Food",
+      color: randomColor(),
+      owner: newUser._id,
+      isDefault: true,
+    }),
+    await Category.create({
+      name: "Travel",
+      color: randomColor(),
+      owner: newUser._id,
+      isDefault: true,
+    }),
+    await Category.create({
+      name: "Miscellaneous",
+      color: randomColor(),
+      owner: newUser._id,
+      isDefault: true,
+    }),
+  ]);
   // Create JWT
   const token = signToken(newUser._id);
 

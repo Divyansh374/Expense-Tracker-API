@@ -30,7 +30,7 @@ const transactionSchema = new mongoose.Schema(
       institution: String,
       id: mongoose.Types.ObjectId,
     },
-    category: mongoose.Types.ObjectId,
+    category: String,
     owner: mongoose.Types.ObjectId,
     transactionDate: Date,
     status: {
@@ -43,6 +43,7 @@ const transactionSchema = new mongoose.Schema(
     isDeleted: {
       type: Boolean,
       default: true,
+      select: false,
     },
   },
   { timestamps: true },

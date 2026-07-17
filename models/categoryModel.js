@@ -4,6 +4,7 @@ const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      unique: true,
       required: [true, "Please provide a name for your category"],
     },
     icon: String,
@@ -21,6 +22,7 @@ const categorySchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
+      select: false,
     },
   },
   { timestamps: true },
