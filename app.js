@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const globalErrorHandler = require("./controllers/errorController");
 
 const authRouter = require("./routes/authRoutes");
 const institutionRouter = require("./routes/institutionRoutes");
@@ -28,5 +29,7 @@ app.use("/expense-tracker/v1/institution-requests", institutionRequestRouter);
 app.use("/expense-tracker/v1/accounts", accountRouter);
 app.use("/expense-tracker/v1/transactions", transactionRouter);
 app.use("/expense-tracker/v1/categories", categoryRouter);
+
+app.use(globalErrorHandler);
 
 module.exports = app;
