@@ -5,6 +5,7 @@ const {
   getCategories,
   getCategory,
   updateCategory,
+  deleteCategory,
 } = require("../controllers/categoryController");
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router
 router
   .route("/:id")
   .get(protect, restrictTo("user"), getCategory)
-  .patch(protect, restrictTo("user"), updateCategory);
+  .patch(protect, restrictTo("user"), updateCategory)
+  .delete(protect, restrictTo("user"), deleteCategory);
 
 module.exports = router;

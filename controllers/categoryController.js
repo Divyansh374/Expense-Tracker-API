@@ -78,3 +78,21 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.deleteCategory = catchAsync(async (req, res, next) => {
+  const category = await Category.findOneAndDelete({
+    _id: req.params.id,
+    owner: req.user._id,
+  });
+
+  if (!category) {
+    return next(new AppError(404, "Category not found"));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      category,
+    },
+  });
+});
