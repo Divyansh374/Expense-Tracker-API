@@ -2,6 +2,7 @@ const randomColor = require("randomcolor");
 const Account = require("../models/accountModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const APIFeatures = require("../utils/apiFeatures");
 
 const generateAccountName = (name, accountNumber) =>
   accountNumber === 1 ? name : `${name} - Account ${accountNumber}`;
@@ -101,7 +102,17 @@ exports.addAccount = catchAsync(async (req, res, next) => {
 });
 
 exports.getAccounts = catchAsync(async (req, res, next) => {
-  const accounts = await Account.find({ owner: req.user._id });
+  const features = new APIFeatures(
+    Account.find({ owner: req.user._id }),
+    req.query,
+    ["name", "type", "institution", "currency"],
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const accounts = await features.query;
 
   res.status(200).json({
     status: "success",

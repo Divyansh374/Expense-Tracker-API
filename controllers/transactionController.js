@@ -4,6 +4,7 @@ const Account = require("../models/accountModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const Category = require("../models/categoryModel");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.resolveAccounts = catchAsync(async (req, res, next) => {
   const { sourceAccount, destinationAccount } = req.body;
@@ -233,10 +234,28 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
 });
 
 exports.getTransactions = catchAsync(async (req, res, next) => {
-  const transactions = await Transaction.find({
-    owner: req.user._id,
-    isDeleted: false,
-  });
+  const features = new APIFeatures(
+    Transaction.find({
+      owner: req.user._id,
+      isDeleted: false,
+    }),
+    req.query,
+    [
+      "title",
+      "description",
+      "transactionType",
+      "paymentMode",
+      "sourceAccount",
+      "destinationAccount",
+      "notes",
+    ],
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const transactions = await features.query;
 
   res.status(200).json({
     status: "success",

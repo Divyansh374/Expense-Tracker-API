@@ -4,6 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const { excludeObj } = require("../utils/objectUtils");
 const Transaction = require("../models/transactionModel");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.createCategory = catchAsync(async (req, res, next) => {
   const existingCategory = await Category.findOne({
@@ -32,9 +33,19 @@ exports.createCategory = catchAsync(async (req, res, next) => {
 });
 
 exports.getCategories = catchAsync(async (req, res, next) => {
-  const categories = await Category.find({
-    owner: req.user._id,
-  });
+  const features = new APIFeatures(
+    Category.find({
+      owner: req.user._id,
+    }),
+    req.query,
+    ["name"],
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const categories = await features.query;
 
   res.status(200).json({
     status: "success",
@@ -117,10 +128,28 @@ exports.getCategoryTransactions = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "Category not found"));
   }
 
-  const transactions = await Transaction.find({
-    category: req.params.id,
-    owner: req.user._id,
-  }).sort("-transactionDate");
+  const features = new APIFeatures(
+    Transaction.find({
+      category: req.params.id,
+      owner: req.user._id,
+    }),
+    req.query,
+    [
+      "title",
+      "description",
+      "transactionType",
+      "paymentMode",
+      "sourceAccount",
+      "destinationAccount",
+      "notes",
+    ],
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const transactions = await features.query;
 
   res.status(200).json({
     status: "success",
