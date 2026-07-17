@@ -6,9 +6,17 @@ const {
   getCategory,
   updateCategory,
   deleteCategory,
+  getCategoryTransactions,
 } = require("../controllers/categoryController");
 
 const router = express.Router();
+
+router.get(
+  "/:id/transactions",
+  protect,
+  restrictTo("user"),
+  getCategoryTransactions,
+);
 
 router
   .route("/")

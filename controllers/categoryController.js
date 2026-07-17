@@ -3,6 +3,7 @@ const Category = require("../models/categoryModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const { excludeObj } = require("../utils/objectUtils");
+const Transaction = require("../models/transactionModel");
 
 exports.createCategory = catchAsync(async (req, res, next) => {
   const existingCategory = await Category.findOne({
@@ -102,6 +103,29 @@ exports.deleteCategory = catchAsync(async (req, res, next) => {
     status: "success",
     data: {
       category,
+    },
+  });
+});
+
+exports.getCategoryTransactions = catchAsync(async (req, res, next) => {
+  const category = await Category.findOne({
+    _id: req.params.id,
+    owner: req.user._id,
+  });
+
+  if (!category) {
+    return next(new AppError(404, "Category not found"));
+  }
+
+  const transactions = await Transaction.find({
+    category: req.params.id,
+    owner: req.user._id,
+  }).sort("-transactionDate");
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      transactions,
     },
   });
 });
