@@ -18,7 +18,10 @@ const categorySchema = new mongoose.Schema(
         amount: Number,
       },
     ],
-    isDefault: Boolean,
+    isDefault: {
+      type: Boolean,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       default: true,

@@ -89,7 +89,7 @@ exports.deleteCategory = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "Category not found"));
   }
 
-  res.status(200).json({
+  res.status(204).json({
     status: "success",
     data: {
       category,
