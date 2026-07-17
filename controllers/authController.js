@@ -1,6 +1,7 @@
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const randomColor = require("randomcolor");
+const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
@@ -12,47 +13,81 @@ const signToken = (id) =>
   });
 
 exports.signup = catchAsync(async (req, res, next) => {
-  // Create the user
-  const { name, email, password, passwordConfirm } = req.body;
+  let token;
+  let newUser;
+  const session = await mongoose.startSession();
 
-  const newUser = await User.create({
-    name,
-    email,
-    password,
-    passwordConfirm,
-  });
+  session.startTransaction();
+  try {
+    // Create the user
+    const { name, email, password, passwordConfirm } = req.body;
 
-  await Promise.all([
-    await Category.create({
-      name: "Food",
-      color: randomColor(),
-      owner: newUser._id,
-      isDefault: true,
-    }),
-    await Category.create({
-      name: "Travel",
-      color: randomColor(),
-      owner: newUser._id,
-      isDefault: true,
-    }),
-    await Category.create({
-      name: "Miscellaneous",
-      color: randomColor(),
-      owner: newUser._id,
-      isDefault: true,
-    }),
-  ]);
-  // Create JWT
-  const token = signToken(newUser._id);
+    [newUser] = await User.create(
+      [
+        {
+          name,
+          email,
+          password,
+          passwordConfirm,
+        },
+      ],
+      { session },
+    );
 
-  // Send JWT
-  res.status(200).json({
-    status: "success",
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+    await Promise.all([
+      Category.create(
+        [
+          {
+            name: "Food",
+            color: randomColor(),
+            owner: newUser._id,
+            isDefault: true,
+          },
+        ],
+        { session },
+      ),
+      Category.create(
+        [
+          {
+            name: "Travel",
+            color: randomColor(),
+            owner: newUser._id,
+            isDefault: true,
+          },
+        ],
+        { session },
+      ),
+      Category.create(
+        [
+          {
+            name: "Miscellaneous",
+            color: randomColor(),
+            owner: newUser._id,
+            isDefault: true,
+          },
+        ],
+        { session },
+      ),
+    ]);
+    await session.commitTransaction();
+
+    // Create JWT
+    token = signToken(newUser._id);
+
+    // Send JWT
+    res.status(201).json({
+      status: "success",
+      token,
+      data: {
+        user: newUser,
+      },
+    });
+  } catch (err) {
+    await session.abortTransaction();
+    return next(err);
+  } finally {
+    session.endSession();
+  }
 });
 
 exports.login = catchAsync(async (req, res, next) => {

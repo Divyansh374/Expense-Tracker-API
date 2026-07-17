@@ -132,6 +132,7 @@ exports.getCategoryTransactions = catchAsync(async (req, res, next) => {
     Transaction.find({
       category: req.params.id,
       owner: req.user._id,
+      isDeleted: false,
     }),
     req.query,
     [

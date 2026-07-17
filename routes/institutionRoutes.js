@@ -19,7 +19,7 @@ router
 router
   .route("/:id")
   .get(getInstitution)
-  .patch(protect, restrictTo("admin", "manager"), updateInstitution)
+  .patch(protect, restrictTo("admin"), updateInstitution)
   .delete(protect, restrictTo("admin"), deleteInstitution);
 
 router.patch("/:id/restore", protect, restrictTo("admin"), restoreInstitution);

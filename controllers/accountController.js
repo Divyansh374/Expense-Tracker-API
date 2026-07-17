@@ -93,7 +93,7 @@ exports.addAccount = catchAsync(async (req, res, next) => {
     color: randomColor(),
   });
 
-  res.status(200).json({
+  res.status(201).json({
     status: "success",
     data: {
       account,
@@ -103,7 +103,28 @@ exports.addAccount = catchAsync(async (req, res, next) => {
 
 exports.getAccounts = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(
-    Account.find({ owner: req.user._id }),
+    Account.find({ owner: req.user._id, isDeleted: false }),
+    req.query,
+    ["name", "type", "institution", "currency"],
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const accounts = await features.query;
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      accounts,
+    },
+  });
+});
+
+exports.getDeletedAccounts = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(
+    Account.find({ owner: req.user._id, isDeleted: true }),
     req.query,
     ["name", "type", "institution", "currency"],
   )
@@ -186,7 +207,7 @@ exports.deleteAccount = catchAsync(async (req, res, next) => {
     );
   }
 
-  account.isActive = false;
+  account.isDeleted = true;
   await account.save();
 
   res.status(204).json({

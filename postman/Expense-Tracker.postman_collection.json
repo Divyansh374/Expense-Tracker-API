@@ -1,0 +1,1279 @@
+{
+  "info": {
+    "_postman_id": "f3120c41-4b03-4379-a407-a3b24087f9d9",
+    "name": "Expense Tracker",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55439050",
+    "_collection_link": "https://go.postman.co/collection/55439050-f3120c41-4b03-4379-a407-a3b24087f9d9?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Sign Up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"jwt\", pm.response.json().token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"john\",\r\n    \"email\": \"user@john.io\",\r\n    \"password\": \"pass1234\",\r\n    \"passwordConfirm\": \"pass1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/users/signup",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "users",
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"jwt\", pm.response.json().token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"user@radha.io\",\r\n    \"password\": \"pass1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/users/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Users",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/users/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "users",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Institution",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Chutiyo Ka Bank\",\r\n    \"shortName\": \"CKB\",\r\n    \"institutionType\": \"bank\",\r\n    \"country\": \"IN\",\r\n    \"website\": \"https://www.chutiya.bank.in/\",\r\n    \"supportedCurrencies\": [\"USD\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institutions/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institutions",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Institution",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"supportedCurrencies\": [\r\n        \"CNY\", \"USD\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institutions/6a5a64085e94295c48689278",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institutions",
+                "6a5a64085e94295c48689278"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Institution",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"shortName\": \"PNB\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institutions/6a5a66a45e94295c4868927a",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institutions",
+                "6a5a66a45e94295c4868927a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Institution",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institutions/6a5a66a45e94295c4868927a/restore",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institutions",
+                "6a5a66a45e94295c4868927a",
+                "restore"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"institutionType\": \"bank\",\r\n    \"country\": \"IN\",\r\n    \"website\": \"https://www.example.bank.in\",\r\n    \"supportedCurrencies\": [\r\n        \"INR\", \"USD\", \"AUD\"\r\n    ],\r\n    \"adminRemarks\": \"The requested Institution has been added to the Institutions list\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institution-requests/6a5a65c15e94295c48689279/approve",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institution-requests",
+                "6a5a65c15e94295c48689279",
+                "approve"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institution-requests/6a55e92e1672426029d81a34/reject",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institution-requests",
+                "6a55e92e1672426029d81a34",
+                "reject"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Institutions",
+      "item": [
+        {
+          "name": "Institutions",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institutions/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institutions",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Institution",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institutions/6a56603d965d0f011845918f",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institutions",
+                "6a56603d965d0f011845918f"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Transaction Statistics",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Salary\",\r\n    \"description\": \"Salary from the company I left\",\r\n    \"amount\": 3250,\r\n    \"destinationAccount\": {\r\n        \"name\": \"Cash\"\r\n    },\r\n    \"sourceAccount\": {\r\n        \"name\": \"Cash\"\r\n    }\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/transactions/stats",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "transactions",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Make Transaction",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"amount\": 299,\r\n    \"sourceAccount\": {\r\n        \"name\": \"Savings\",\r\n        \"institution\": \"HDFC\"\r\n    },\r\n    \"category\": \"Travel\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/transactions",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transactions",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Salary\",\r\n    \"description\": \"Salary from the company I left\",\r\n    \"amount\": 3250,\r\n    \"destinationAccount\": {\r\n        \"name\": \"Cash\"\r\n    },\r\n    \"sourceAccount\": {\r\n        \"name\": \"Cash\"\r\n    }\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/transactions",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transaction",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Salary\",\r\n    \"description\": \"Salary from the company I left\",\r\n    \"amount\": 3250,\r\n    \"destinationAccount\": {\r\n        \"name\": \"Cash\"\r\n    },\r\n    \"sourceAccount\": {\r\n        \"name\": \"Cash\"\r\n    }\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/transactions/6a5a701bca6c36d123fc66a3",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "transactions",
+                "6a5a701bca6c36d123fc66a3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transaction",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/transactions/6a5a701bca6c36d123fc66a3",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "transactions",
+                "6a5a701bca6c36d123fc66a3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Luxury\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/categories",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Categories",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/categories",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Category",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/categories/6a5a481759c1dd617b35d4d9",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "categories",
+                "6a5a481759c1dd617b35d4d9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/categories/6a59f43150d8a2b549955413",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "categories",
+                "6a59f43150d8a2b549955413"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/categories/6a5a72a74aa39c5a77f40c83",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "categories",
+                "6a5a72a74aa39c5a77f40c83"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Category Transactions",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/categories/6a5a481759c1dd617b35d4db/transactions",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "categories",
+                "6a5a481759c1dd617b35d4db",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Institution Requests",
+      "item": [
+        {
+          "name": "Institution Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Example Bank\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institution-requests/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institution-requests",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Institution Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institution-requests/6a5a65c15e94295c48689279",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institution-requests",
+                "6a5a65c15e94295c48689279"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Institution Requests",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Kotak bank\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institution-requests/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institution-requests",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/institution-requests/6a566fd56e1b7ecd3cd62fcf/cancel",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "institution-requests",
+                "6a566fd56e1b7ecd3cd62fcf",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "Add Account",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"type\": \"bank\",\r\n    \"institution\": \"HDFC\",\r\n    \"currency\": \"USD\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/accounts",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Accounts",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/accounts",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Account",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"type\": \"bank\",\r\n    \"institution\": \"HDFC Bank\",\r\n    \"currency\": \"GBP\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/accounts/6a5a6a5a5e94295c4868927c",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "accounts",
+                "6a5a6a5a5e94295c4868927c"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Account Name",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Emergency fund\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/accounts/6a5a6ab45e94295c4868927e",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "accounts",
+                "6a5a6ab45e94295c4868927e"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Account",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Emergency fund\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/accounts/6a5a6a945e94295c4868927d",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "accounts",
+                "6a5a6a945e94295c4868927d"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Account",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Emergency fund\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/accounts/6a5754c34a6d93e88815bb76/restore",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "accounts",
+                "6a5754c34a6d93e88815bb76",
+                "restore"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Account Stats",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Emergency fund\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/accounts/stats",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "accounts",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deleted Accounts",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{URL}}/expense-tracker/v1/accounts/deleted",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "expense-tracker",
+                "v1",
+                "accounts",
+                "deleted"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

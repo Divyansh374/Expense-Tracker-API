@@ -40,7 +40,7 @@ exports.getInstitutions = catchAsync(async (req, res, next) => {
     isActive: true,
   });
 
-  res.status(200).json({
+  res.status(201).json({
     status: "success",
     data: {
       institutions,

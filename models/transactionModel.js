@@ -45,7 +45,7 @@ const transactionSchema = new mongoose.Schema(
     attachments: Array,
     isDeleted: {
       type: Boolean,
-      default: true,
+      default: false,
       select: false,
     },
   },

@@ -28,17 +28,24 @@ const institutionSchema = new mongoose.Schema(
         "Please provide a type: bank, walletProvider, paymentGateway",
       ],
     },
-    supportedCurrencies: [
-      {
-        type: String,
-        uppercase: true,
-        required: true,
-        validate: {
-          validator: (val) => code(val),
-          message: (props) => `${props.value} is not a valid country code`,
+    supportedCurrencies: {
+      type: [
+        {
+          type: String,
+          uppercase: true,
+          validate: {
+            validator: (val) => code(val),
+            message: (props) => `${props.value} is not a valid currency code`,
+          },
         },
+      ],
+      validate: {
+        validator: function (arr) {
+          return arr.length > 0;
+        },
+        message: "Please provide at least one supported currency",
       },
-    ],
+    },
     country: {
       type: String,
       required: [true, "Please specify the country"],

@@ -11,10 +11,12 @@ const {
   deleteAccount,
   restoreAccount,
   getAccountStats,
+  getDeletedAccounts,
 } = require("../controllers/accountController");
 
 const router = express.Router();
 
+router.get("/deleted", protect, restrictTo("user"), getDeletedAccounts);
 router.get("/stats", protect, restrictTo("user"), getAccountStats);
 router.patch("/:id/restore", protect, restrictTo("user"), restoreAccount);
 

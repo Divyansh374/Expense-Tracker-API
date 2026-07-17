@@ -157,6 +157,7 @@ exports.resolveCategory = catchAsync(async (req, res, next) => {
 
     req.category = category._id;
   }
+  next();
 });
 
 exports.createTransaction = catchAsync(async (req, res, next) => {
@@ -245,8 +246,10 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
       "description",
       "transactionType",
       "paymentMode",
-      "sourceAccount",
-      "destinationAccount",
+      "sourceAccount.name",
+      "sourceAccount.institution",
+      "destinationAccount.name",
+      "destinationAccount.institution",
       "notes",
     ],
   )
@@ -266,15 +269,13 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
 });
 
 exports.getTransaction = catchAsync(async (req, res, next) => {
-  const transaction = await Transaction.findById(req.params.id);
+  const transaction = await Transaction.findOne({
+    _id: req.params.id,
+    owner: req.user._id,
+  }).select("+isDeleted");
 
-  if (!transaction.owner.equals(req.user._id)) {
-    return next(
-      new AppError(
-        401,
-        "You do not have the permission to access this transaction",
-      ),
-    );
+  if (!transaction) {
+    return next(new AppError(404, "Transaction not found"));
   }
 
   res.status(200).json({
@@ -491,6 +492,15 @@ exports.getTransactionStats = catchAsync(async (req, res, next) => {
             $sort: {
               transactionDate: -1,
               amount: 1,
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              amount: 1,
+              paymentMode: 1,
+              category: 1,
+              transactionDate: 1,
             },
           },
           {
