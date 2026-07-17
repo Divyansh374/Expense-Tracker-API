@@ -30,7 +30,10 @@ const transactionSchema = new mongoose.Schema(
       institution: String,
       id: mongoose.Types.ObjectId,
     },
-    category: String,
+    category: {
+      type: mongoose.Types.ObjectId,
+      ref: "Category",
+    },
     owner: mongoose.Types.ObjectId,
     transactionDate: Date,
     status: {

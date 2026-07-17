@@ -10,6 +10,7 @@ const {
   getTransaction,
   deleteTransaction,
   getTransactionStats,
+  resolveCategory,
 } = require("../controllers/transactionController");
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router
     resolveCurrency,
     validateAmount,
     resolvePaymentMode,
+    resolveCategory,
     createTransaction,
   )
   .get(protect, restrictTo("user"), getTransactions);

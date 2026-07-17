@@ -3,6 +3,7 @@ const Transaction = require("../models/transactionModel");
 const Account = require("../models/accountModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const Category = require("../models/categoryModel");
 
 exports.resolveAccounts = catchAsync(async (req, res, next) => {
   const { sourceAccount, destinationAccount } = req.body;
@@ -131,6 +132,32 @@ exports.resolvePaymentMode = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.resolveCategory = catchAsync(async (req, res, next) => {
+  if (req.body.category) {
+    const category = await Category.findOne({
+      name: req.body.category,
+      owner: req.user._id,
+    });
+
+    if (!category) {
+      return next(new AppError(400, "The specified category does not exist"));
+    }
+
+    req.category = category._id;
+  } else {
+    const category = await Category.findOne({
+      name: "Miscellaneous",
+      owner: req.user._id,
+    });
+
+    if (!category) {
+      return next(new AppError(400, "The specified category does not exist"));
+    }
+
+    req.category = category._id;
+  }
+});
+
 exports.createTransaction = catchAsync(async (req, res, next) => {
   const session = await mongoose.startSession();
 
@@ -180,6 +207,7 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
           paymentMode: req.paymentMode,
           sourceAccount: source,
           destinationAccount: destination,
+          category: req.category,
           owner: req.user._id,
           notes: req.body?.notes,
           attachments: req.body?.attachments,

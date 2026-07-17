@@ -5,6 +5,15 @@ const AppError = require("../utils/appError");
 const { excludeObj } = require("../utils/objectUtils");
 
 exports.createCategory = catchAsync(async (req, res, next) => {
+  const existingCategory = await Category.findOne({
+    name: req.body.name,
+    owner: req.user._id,
+  });
+
+  if (existingCategory) {
+    return next(new AppError(400, "A category with this name already exists"));
+  }
+
   const category = await Category.create({
     name: req.body.name,
     icon: req.body.icon,
