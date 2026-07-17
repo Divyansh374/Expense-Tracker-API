@@ -31,45 +31,6 @@ A production-ready REST API for managing personal finances, accounts, transactio
 - **Authentication:** JWT
 - **Password Hashing:** bcrypt
 
-## Folder Structure
-
-...
-Expense-Tracker/
-├── controllers/
-│ ├── accountController.js
-│ ├── authController.js
-│ ├── categoryController.js
-│ ├── institutionController.js
-│ ├── transactionController.js
-│ └── errorController.js
-│
-├── models/
-│ ├── accountModel.js
-│ ├── categoryModel.js
-│ ├── institutionModel.js
-│ ├── transactionModel.js
-│ └── userModel.js
-│
-├── routes/
-│ ├── accountRoutes.js
-│ ├── authRoutes.js
-│ ├── categoryRoutes.js
-│ ├── institutionRoutes.js
-│ └── transactionRoutes.js
-│
-├── middleware/
-│
-├── utils/
-│ ├── apiFeatures.js
-│ ├── appError.js
-│ ├── catchAsync.js
-│ └── ...
-│
-├── app.js
-├── server.js
-└── README.md
-...
-
 ## Screenshots
 
 #### Folder Structure
@@ -85,6 +46,8 @@ Expense-Tracker/
 ![](assets/20260718_004605_Signup_Response.png)
 
 #### API Features
+
+`GET /expense-tracker/v1/transactions?search=HDFC&transactionType=expense&sort=-amount,transactionDate&fields=sourceAccount,destinationAccount,amount,status&page=2&limit=5`
 
 ![](assets/20260718_004632_API_Features.png)
 
