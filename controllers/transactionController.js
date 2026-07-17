@@ -207,6 +207,7 @@ exports.createTransaction = catchAsync(async (req, res, next) => {
 exports.getTransactions = catchAsync(async (req, res, next) => {
   const transactions = await Transaction.find({
     owner: req.user._id,
+    isDeleted: false,
   });
 
   res.status(200).json({
@@ -243,9 +244,10 @@ exports.deleteTransaction = catchAsync(async (req, res, next) => {
   session.startTransaction();
 
   try {
-    const transaction = await Transaction.findById(req.params.id).session(
-      session,
-    );
+    const transaction = await Transaction.findOne({
+      _id: req.params.id,
+      isDeleted: false,
+    }).session(session);
 
     if (transaction.transactionType === "transfer") {
       await Promise.all([

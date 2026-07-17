@@ -31,3 +31,17 @@ exports.getCategories = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getCategory = catchAsync(async (req, res, next) => {
+  const category = await Category.findOne({
+    _id: req.params.id,
+    owner: req.user._id,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      category,
+    },
+  });
+});
